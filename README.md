@@ -1,0 +1,1 @@
+# optek-basdat-inventarisku

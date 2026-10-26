@@ -1,0 +1,83 @@
+CREATE TABLE users (
+    id SERIAL PRIMARY KEY,
+    username VARCHAR(50) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    role VARCHAR(20) NOT NULL,
+    timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE karyawan (
+    id SERIAL PRIMARY KEY,
+    nama VARCHAR(100) NOT NULL,
+    departement VARCHAR(100)
+);
+
+CREATE TABLE status (
+    id SERIAL PRIMARY KEY,
+    nama VARCHAR(50) NOT NULL UNIQUE
+);
+
+CREATE TABLE lokasi (
+    id SERIAL PRIMARY KEY,
+    nama VARCHAR(100) NOT NULL UNIQUE
+);
+
+CREATE TABLE kategori (
+    id SERIAL PRIMARY KEY,
+    nama VARCHAR(100) NOT NULL UNIQUE
+);
+
+CREATE TABLE jenis_history (
+    id SERIAL PRIMARY KEY,
+    nama VARCHAR(100) NOT NULL UNIQUE
+);
+
+CREATE TABLE sparepart (
+    id SERIAL PRIMARY KEY,
+    nama VARCHAR(100) NOT NULL
+);
+
+CREATE TABLE teknisi (
+    id SERIAL PRIMARY KEY,
+    nama VARCHAR(100) NOT NULL
+);
+
+CREATE TABLE asset (
+    id SERIAL PRIMARY KEY,
+    kode_asset VARCHAR(50) NOT NULL UNIQUE,
+    nama_asset VARCHAR(150) NOT NULL,
+    brand VARCHAR(100),
+    model VARCHAR(100),
+    serial_number VARCHAR(100) UNIQUE,
+    tanggal_pembelian DATE,
+    harga_pembelian NUMERIC(15, 2),
+    garansi DATE,
+    foto VARCHAR(255),
+    notes TEXT,
+    qr_token VARCHAR(255) UNIQUE,
+    id_kategori INT NOT NULL REFERENCES kategori(id) ON UPDATE CASCADE ON DELETE RESTRICT,
+    id_status INT NOT NULL REFERENCES status(id) ON UPDATE CASCADE ON DELETE RESTRICT,
+    id_lokasi INT NOT NULL REFERENCES lokasi(id) ON UPDATE CASCADE ON DELETE RESTRICT,
+    id_karyawan INT REFERENCES karyawan(id) ON UPDATE CASCADE ON DELETE SET NULL,
+    create_by INT REFERENCES users(id) ON UPDATE CASCADE ON DELETE SET NULL,
+    create_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    update_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE asset_history (
+    id SERIAL PRIMARY KEY,
+    id_asset INT NOT NULL REFERENCES asset(id) ON UPDATE CASCADE ON DELETE CASCADE,
+    tanggal DATE NOT NULL,
+    id_jenis INT NOT NULL REFERENCES jenis_history(id) ON UPDATE CASCADE ON DELETE RESTRICT,
+    keluhan TEXT,
+    tindakan TEXT,
+    id_teknisi INT REFERENCES teknisi(id) ON UPDATE CASCADE ON DELETE SET NULL,
+    id_status INT NOT NULL REFERENCES status(id) ON UPDATE CASCADE ON DELETE RESTRICT,
+    id_sparepart INT REFERENCES sparepart(id) ON UPDATE CASCADE ON DELETE SET NULL,
+    biaya NUMERIC(15, 2),
+    foto_sebelum VARCHAR(255),
+    foto_sesudah VARCHAR(255),
+    notes TEXT,
+    create_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    update_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
